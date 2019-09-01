@@ -1,0 +1,38 @@
+<html>
+<head>
+
+    <title>GSAP :: Text Scramble Test</title>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css">
+
+    <link rel="stylesheet" href="../assets/css/animate.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/font-awesome.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/styles.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/client-overrides.css" type="text/css" />
+    
+</head>
+<body>
+
+    <div class="content-wrapper">
+        <h2 id="behold">BEHOLD! TEXT!</h2>
+    </div>
+
+    <!-- SCRIPTS -->
+    
+    <!-- third-party libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            
+    <!-- third-party libraries GSAP -->
+    <script type="text/javascript" src="../assets/js-src/gsap/TweenMax.js"></script>
+    <script type="text/javascript" src="../assets/js-src/gsap/plugins/TextPlugin.js"></script>
+    <script type="text/javascript" src="../assets/js-src/gsap/plugins/ScrambleTextPlugin.js"></script>
+
+    <script>
+
+        TweenLite.to( "#behold" , 1, {scrambleText:{text:"THIS IS NEW TEXT", chars:"XO", revealDelay:0.5, speed:0.3, newClass:"myClass"}});
+
+    </script>
+
+</body>
+</html>

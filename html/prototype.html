@@ -1,0 +1,202 @@
+<html>
+<head>
+
+    <title>Spin to Win</title>
+
+    <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/main.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/styles.css" type="text/css" />
+
+</head>
+<body>
+
+    <section>
+        <div class="flex-parent">
+
+            <div class="flex-child wheel wheel-background">
+                <div class="wheel-ticker-wrapper">
+                    <div id="ticker" class="wheel-ticker">
+                        <img src="../assets/img/spin-to-win-ticker.png"/>
+                    </div>
+                </div>
+                <canvas id="canvas" width="512" height="512">
+                    <p>Sorry, your browser doesn't support canvas. Please try another.</p>
+                </canvas>
+            </div>
+
+            <div class="flex-child legend">
+                <form id="user-form" action="#">
+                    <div class="form-row">
+                        <div class="col-6">
+                            <input type="text" id="user-name" class="form-control" placeholder="Name" required >
+                        </div>
+                        <div class="col">
+                            <input type="text" id="user-phone" class="form-control" placeholder="Phone Number" required >
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <input type="email" id="user-email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email" required >
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary" onClick="startSpin()">Spin to Win!</button>
+                        <button class="btn btn-danger" onClick="ResetForm()">Reset</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="flex-child legend">
+                <input id="wheel-background-input" type="text" placeholder="e.g. ../assets/img/wheel_back.png" />
+                <button id="set-background" onClick="SetWheelBackground()">Set Background</button>
+                <hr>
+                <input id="raw-data-input" type="text" placeholder="e.g. ../assets/data/js/wheel-custom.js" />
+                <input type='button' value='Update' onclick='UpdateWheelFromRawData();'>
+                <hr>
+                <button id="click-to-tick" onClick="PlayTicker()">Click to Tick</button>
+                <button id="click-to-laugh">Click to Laugh</button>
+                <button onClick="ToggleConfetti()">Toggle Confetti</button>
+                <button type="button" data-toggle="modal" data-target="#win-modal">Open Modal</button>
+            </div>
+
+        </div>
+    </section>
+    
+    <!-- win modal -->
+    <div class="modal" id="win-modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">CONGRATULATIONS!</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <h2 id="winning-prize-label">You've won!</h2>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- SCRIPTS -->
+
+    <!-- third-party libraries -->
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js-src/win-wheel-custom.js"></script>
+    <script type="text/javascript" src="../assets/js-src/bootstrap.js"></script>
+
+    <!-- Helper Functions -->
+    <script type="text/javascript" src="../assets/js-src/wheel-helpers.js"></script>
+    <script type="text/javascript" src="../assets/js-src/form-helpers.js"></script>
+
+    <!-- Custom Wheel Types -->
+    <script type="text/javascript" src="../assets/data/vanilla-js/wheel-custom.js"></script>
+    <script type="text/javascript" src="../assets/data/vanilla-js/wheel-basic.js"></script>
+    <script type="text/javascript" src="../assets/data/vanilla-js/wheel-image.js"></script>
+    <script type="text/javascript" src="../assets/data/vanilla-js/wheel-responsive.js"></script>
+    <script type="text/javascript" src="../assets/data/vanilla-js/wheel-sound.js"></script>
+
+    <!-- NOTE :: THIS ADDS HORIZONTAL SCROLL BAR :: HIDE OVERFLOW, OR FIX SCRIPT -->
+    <script type="text/javascript" src="../assets/js-src/confetti.js"></script>
+
+    <!-- Creating the Wheel :: Main Script -->
+    <script>
+
+        // -----------------------------------------------------------------
+        // Variables
+        // -----------------------------------------------------------------
+
+        let _wheelOptions = {};         // wheel options are empty by default
+        let wheelSpinning = false;
+        let theWheel = new Winwheel( _wheelOptions ); // Actual Wheel
+
+
+        // -----------------------------------------------------------------
+        // Function that draws the wheel
+        // -----------------------------------------------------------------
+
+        function UpdateWheelFromRawData()
+        {
+            // set the stage
+            resetWheel();
+            console.log( "_rawData : " + _rawData );
+
+            // use custom wheel type if no wheel type is specified
+            var wheelType = document.getElementById("raw-data-input").value; // "custom";
+            console.log ( "wheelType is : " + wheelType );
+
+            // ERROR CHECK
+            if ( wheelType == "" ){
+                console.log( 'Gotta set a name! Setting to Default :: "custom" ::' );
+                wheelType = "custom";
+            }
+
+            // pull data from the current wheel type
+            var wheelData = _rawData[ wheelType ];
+            console.log( "wheelData : " + wheelData );
+            console.log( "Pull Content from Data: " + wheelData.segments[ 3 ].text );
+
+            // create a new wheel
+            theWheel = new Winwheel( wheelData ); // targets "let theWheel" below
+        }
+
+
+        // -----------------------------------------------------------------
+        // Confetti and Modal functions
+        // -----------------------------------------------------------------
+
+        function ToggleConfetti()
+        {
+            confetti.toggle();
+        }
+
+
+        // When the modal closes, we want the confetti to stop, and the wheel to reset. 
+        // Reference - https://stackoverflow.com/a/13201843
+
+        $('#win-modal').on('hidden.bs.modal', function (){
+            confetti.stop(); 
+            ResetForm(); 
+            resetWheel(); 
+        });
+
+        
+
+
+        // -----------------------------------------------------------------
+        // Initialization
+        // -----------------------------------------------------------------
+
+        confetti.stop(); // pause confetti by default!
+        UpdateWheelFromRawData();
+
+    </script>
+
+    <!-- Testing Functions -->
+    <script>
+
+        $(document).ready(function()
+        {
+            $('#click-to-laugh').mousedown(function(){
+                PlaySfx( "boing" );
+            });
+
+            $('#win-modal').modal({ show: false}); // https://stackoverflow.com/a/11404777  
+            $("#open-modal").modal(); 
+        });
+
+    </script>
+
+</body>
+</html>

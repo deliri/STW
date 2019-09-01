@@ -1,0 +1,284 @@
+<html>
+  <head>
+    <title>Spin to Win :: Taccom</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/css/index.css"
+    />
+
+    <link rel="stylesheet" href="../assets/css/animate.css" type="text/css" />
+    <link rel="stylesheet" href="../assets/css/bootstrap.css" type="text/css" />
+    <link
+      rel="stylesheet"
+      href="../assets/css/font-awesome.css"
+      type="text/css"
+    />
+    <link rel="stylesheet" href="../assets/css/styles.css" type="text/css" />
+    <link
+      rel="stylesheet"
+      href="../assets/css/client-overrides.css"
+      type="text/css"
+    />
+    <!-- SCRIPTS -->
+
+    <!-- third-party libraries GSAP -->
+    <script
+      type="text/javascript"
+      src="../assets/js-src/gsap/TweenMax.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../assets/js-src/gsap/plugins/TextPlugin.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../assets/js-src/gsap/plugins/ScrambleTextPlugin.js"
+    ></script>
+
+    <!-- third-party libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script
+      type="text/javascript"
+      src="../assets/js-src/win-wheel-custom.js"
+    ></script>
+    <script type="text/javascript" src="../assets/js-src/bootstrap.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.min.js"></script>
+
+    <!-- NOTE :: THIS ADDS HORIZONTAL SCROLL BAR :: HIDE OVERFLOW, OR FIX SCRIPT -->
+    <script type="text/javascript" src="../assets/js-src/confetti.js"></script>
+
+    <!-- Helper Functions -->
+    <script
+      type="text/javascript"
+      src="../assets/js-src/wheel-helpers.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../assets/js-src/keyboard-helper.js"
+    ></script>
+
+    <!-- Example Wheel Data Structures -->
+    <script
+      type="text/javascript"
+      src="../assets/data/examples/wheel-basic.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../assets/data/examples/wheel-image.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../assets/data/examples/wheel-responsive.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../assets/data/examples/wheel-sound.js"
+    ></script>
+
+    <!-- Current Data Structures -->
+    <script
+      type="text/javascript"
+      src="../assets/data/vanilla-js/wheel-custom.js"
+    ></script>
+    <script
+      type="text/javascript"
+      src="../assets/data/vanilla-js/wheel-taccom.js"
+    ></script>
+  </head>
+
+  <body onresize="UpdatePageAfterResize()">
+    <div class="layer">
+      <div class="flex-parent">
+        <div class="flex-child client-company">
+          <div class="padding-wrapper">
+            <img src="../assets/img/taccom/logo.png" />
+            <div class="spacer_30"></div>
+          </div>
+        </div>
+
+        <div class="flex-child client-title">
+          <div class="padding-wrapper">
+            <img src="../assets/img/taccom/title.png" />
+            <div class="spacer_40"></div>
+          </div>
+        </div>
+
+        <div class="flex-child wheel wheel-background full-width">
+          <div class="wheel-wrapper">
+            <div class="wheel-ticker-wrapper">
+              <div id="ticker" class="wheel-ticker">
+                <!--<img src="../assets/img/spin-to-win-ticker.png"/>-->
+                <img src="../assets/img/taccom/ticker.png" />
+              </div>
+            </div>
+            <canvas id="canvas" width="960" height="960">
+              <p>
+                Sorry, your browser doesn't support canvas. Please try another.
+              </p>
+            </canvas>
+          </div>
+        </div>
+
+        <div class="flex-child legend">
+          <div class="form-group">
+            <div class="spacer_40"></div>
+            <button type="button" class="btn mega-button" onClick="startSpin()">
+              Spin Now
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- ends layer :: wheel -->
+
+    <div id="layer-input" class="layer input">
+      <div class="flex-centerer vertical">
+        <div class="content-wrapper fancy centerer">
+          <div class="spacer_10"></div>
+          <img src="../assets/img/taccom/logo.png" />
+          <h4 id="spin-form-title" class="uppercase-title">Sign up to Spin!</h4>
+          <form id="user-form" class="centered">
+            <div class="col">
+              <input
+                type="text"
+                id="user-name"
+                class="screen-keyboard form-control"
+                placeholder="Name"
+                required
+              />
+              <input
+                type="text"
+                id="user-phone"
+                class="screen-keyboard form-control"
+                placeholder="Phone Number"
+                required
+              />
+              <input
+                type="email"
+                id="user-email"
+                class="screen-keyboard form-control"
+                id="exampleInputEmail1"
+                aria-describedby="emailHelp"
+                placeholder="Enter email"
+                required
+              />
+            </div>
+            <button type="submit" class="btn btn-link hidden">
+              Fake submit button
+            </button>
+          </form>
+          <div class="keyboard-wrapper-registration">Keyboard goes here.</div>
+          <div class="col">
+            <button
+              type="button"
+              id="register-user"
+              class="btn mega-button hidden"
+              onClick="RegisterUser()"
+            >
+              Ready?
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="layer-admin" class="layer admin">
+      <div class="flex-centerer vertical content-wrapper">
+        <div class="button-stack">
+          <button id="click-to-play-sound">Test Sound</button>
+          <button onClick="ToggleConfetti()">Toggle Confetti</button>
+
+          <hr />
+
+          <button type="button" class="btn btn-success" onClick="RestartGame()">
+            Restart Game (Resets Wheel + Forms)
+          </button>
+          <button type="button" class="btn btn-danger" onClick="ResetForm()">
+            Reset Wheel
+          </button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            onClick="RestoreWheelDataFromBackup()"
+          >
+            Restore Wheel From Backup
+          </button>
+          <button class="btn btn-warning" onClick="AsePostWheelData()">
+            Post Wheel Data
+          </button>
+
+          <hr />
+
+          <div class="form-group">
+            <h4 class="stat-label">Prizes</h4>
+            <button
+              type="button"
+              class="btn btn-light float-right"
+              onClick="AseGetPrizes()"
+            >
+              Download CSV
+            </button>
+            <textarea
+              disabled
+              class="form-control rounded-0"
+              id="stat-prizes"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <h4 class="stat-label">Winners</h4>
+            <button
+              type="button"
+              class="btn btn-light float-right"
+              onClick="AseGetWinners()"
+            >
+              Download CSV
+            </button>
+            <textarea
+              disabled
+              class="form-control rounded-0"
+              id="stat-winners"
+              rows="4"
+            ></textarea>
+          </div>
+
+          <hr />
+
+          <input
+            id="wheel-background-input"
+            type="text"
+            placeholder="e.g. ../assets/img/wheel_back.png"
+          />
+          <button id="set-background" onClick="SetWheelBackground()">
+            Set Background
+          </button>
+
+          <hr />
+
+          <input
+            id="raw-data-input"
+            type="text"
+            placeholder="e.g. ../assets/data/js/wheel-custom.js"
+          />
+          <input
+            type="button"
+            value="Update"
+            onclick="UpdateWheelTypeFromInput();"
+          />
+
+          <hr />
+        </div>
+      </div>
+    </div>
+
+    <div class="master-control">
+      <button onClick="ToggleAdmin()" class="btn btn-light btn-hidden">
+        TOGGLE ADMIN
+      </button>
+    </div>
+  </body>
+</html>

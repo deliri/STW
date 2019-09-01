@@ -1,0 +1,14 @@
+runtime: go112
+# service: sparkrogers-193119
+
+handlers:
+  - url: /assets
+    static_dir: assets
+
+  - url: /(.*\.(gif|png|jpg))$
+    static_files: assets/\1
+    upload: assets/.*\.(gif|png|jpg)$
+
+  - url: /.*
+    script: auto
+    secure: always

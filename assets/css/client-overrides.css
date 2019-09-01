@@ -1,0 +1,17 @@
+/* This is where we put CSS styles that would write over the base design */ 
+
+
+/* -- Client-Specific Page Elements  -- */ 
+
+.client-company img {
+    max-width: 320px;
+}
+
+.client-title img {
+    max-width: 360px; 
+    margin-left: 4px;
+}
+
+#user-form {
+    max-width: 400px; 
+}
