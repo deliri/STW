@@ -51,10 +51,10 @@ To download winners in CSV format, Visit "api/download-prizes"
 # Selecting and Editing Wheel Types
 
 ## Editing Wheel Type
-The wheel type is saved in the directory "assets/data/wheel-type.
-You can create and save customer wheel types in this directory using the examples in the same directory.
+The wheel type is saved in the directory "assets/data/wheel-types".
+You can create and save custom wheel types in this directory using the examples in the same directory.
 
 ## Selecting Wheel Type
 The available wheel types will be loaded on page load. These are pushed into the home(taccom) template. You can change the current wheel type on page by selecting the dropdown menu (Select Wheel Type).
 
-A new javascript function,"AseChangeWheelType()" is created to handle the change event in the dropdown button. this function accepts a parameter which defines the selected wheel type
+A new javascript function,"AseChangeWheelType()" is created to handle the change events in the dropdown button. this function accepts a parameter which defines the selected wheel type.
