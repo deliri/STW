@@ -1,7 +1,8 @@
 package router
 
 import (
-	"github.com/deliri/STW_0001_GO_Prototype/controllers"
+	"stw/controllers"
+
 	"github.com/go-chi/chi"
 )
 
@@ -25,6 +26,14 @@ func RegisterRoutes() *chi.Mux {
 		// !Web Routes
 		// Home page takes you to the login
 		r.Get("/", h(controllers.Home))
+
+		r.Get("/save-prize", h(controllers.SavePrize))
+
+		r.Get("/save-winner", h(controllers.SaveWinner))
+
+		r.Get("/download-winner", h(controllers.DownloadWinners))
+
+		r.Get("/download-prize", h(controllers.DownloadPrizes))
 
 		// logout redirects to the home page
 		// ! implement cookie and session clearance

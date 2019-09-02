@@ -3,7 +3,7 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/deliri/STW_0001_GO_Prototype/render"
+	"stw/render"
 )
 
 // Home loads the login page to sign up or login

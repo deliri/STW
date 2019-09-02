@@ -8,7 +8,7 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/deliri/STW_0001_GO_Prototype/router"
+	"stw/router"
 )
 
 // tpl is a global variable holding all the compiled HTML templates for rendering

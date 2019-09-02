@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/deliri/STW_0001_GO_Prototype/render"
+	"stw/render"
 )
 
 // Error is used to convey problems during the rendering of any pages.

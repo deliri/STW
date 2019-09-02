@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/deliri/STW_0001_GO_Prototype/controllers"
+	"stw/controllers"
 	logg "github.com/sirupsen/logrus"
 )
 

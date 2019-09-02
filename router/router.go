@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/deliri/STW_0001_GO_Prototype/controllers"
+	"stw/controllers"
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 )
