@@ -23,10 +23,12 @@ func (se StatusError) Error() string {
 	return se.Err.Error()
 }
 
+//Status of Response
 func (se StatusError) Status() int {
 	return se.Code
 }
 
+//Handler handles http requests
 type Handler func(w http.ResponseWriter, r *http.Request) error
 
 func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -44,6 +46,7 @@ func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//ErrorHandler hanldes Errors
 func ErrorHandler(w http.ResponseWriter, r *http.Request) {
 	// v := views.New(r)
 	// v.RenderError(w, http.StatusInternalServerError)

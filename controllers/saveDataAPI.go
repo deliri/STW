@@ -28,13 +28,12 @@ func SaveWinner(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 
-		return nil
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "%s", "Invalid Request")
-		return nil
-	}
 
+	}
+	return nil
 }
 
 // SavePrize Winners
@@ -60,10 +59,9 @@ func SavePrize(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 
-		return nil
 	} else {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "%s", "Invalid Request")
-		return nil
 	}
+	return nil
 }
