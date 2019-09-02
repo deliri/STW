@@ -1042,6 +1042,22 @@ function AseGetPrizes()
     });
 }
 
+//Change to the selected wheel type
+function AseChangeWheelType(wheelType){
+    console.log(wheelType)
+    if ( wheelType == "" || _rawData[wheelType] == ""){
+        console.log( 'Gotta set a name! Setting to Default :: "taccom" ::' );
+        wheelType = "taccom";
+    }
+
+    // Update the global variable 
+    _currentWheelType = wheelType;
+    SetupWheelData(); 
+    UpdateWheelFromRawData(); 
+    UpdateStatDisplays();
+    
+    console.log( 'Wheel Type changed to :: '+ wheelType );
+}
 
 
 // -----------------------------------------------------------------

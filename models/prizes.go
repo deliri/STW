@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"log"
 	"time"
+
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 )
 
 //Prize is details of the User and Prize
@@ -100,4 +103,18 @@ func LoadPrizes() Prizes {
 	}
 
 	return pr
+}
+
+//Validate Prize
+func (p Prize) Validate() error {
+	return validation.ValidateStruct(&p,
+		// Name cannot be empty, and the length must between 2 and 4
+		validation.Field(&p.Name, validation.Required, validation.Length(2, 60)),
+		//Email field is required and valid
+		validation.Field(&p.Email, validation.Required, is.Email),
+		// Phone Number cannot be empty, and the length must between 2 and 4
+		validation.Field(&p.PhoneNumber, validation.Required, validation.Length(2, 40)),
+		// Phone Number cannot be empty, and the length must between 2 and 200
+		validation.Field(&p.Prize, validation.Length(2, 200)),
+	)
 }

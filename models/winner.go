@@ -2,6 +2,8 @@ package models
 
 import (
 	"encoding/json"
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 	"fmt"
 	"log"
 	"time"
@@ -22,6 +24,7 @@ type Winners []Winner
 var (
 	//winPath of File/Database
 	winPath = "database/winners/allwinners/all_winners.json"
+
 )
 
 //GetHeader returns headeer to be used in CVS data
@@ -106,4 +109,17 @@ func LoadWinners() Winners {
 	}
 
 	return wn
+}
+
+
+//Validate Winner
+func (p Winner) Validate() error {
+	return validation.ValidateStruct(&p,
+		// Name cannot be empty, and the length must between 2 and 4
+		validation.Field(&p.Name, validation.Required, validation.Length(2, 60)),
+		//Email field is required and valid
+		validation.Field(&p.Email, validation.Required, is.Email),
+		// Prize cannot be empty, and the length must between 2 and 200
+		validation.Field(&p.Prize, validation.Required, validation.Length(2, 200)),
+	)
 }

@@ -21,6 +21,10 @@
       type="text/css"
     />
     <!-- SCRIPTS -->
+    <!-- third-party libraries -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script type="text/javascript" src="../assets/js/popper.min.js"></script>  
+    <script type="text/javascript" src="../assets/js-src/bootstrap.js"></script>        
 
     <!-- third-party libraries GSAP -->
     <script
@@ -36,13 +40,11 @@
       src="../assets/js-src/gsap/plugins/ScrambleTextPlugin.js"
     ></script>
 
-    <!-- third-party libraries -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script
       type="text/javascript"
       src="../assets/js-src/win-wheel-custom.js"
     ></script>
-    <script type="text/javascript" src="../assets/js-src/bootstrap.js"></script>
+
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@8"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-keyboard@latest/build/index.min.js"></script>
@@ -79,14 +81,14 @@
     ></script>
 
     <!-- Current Data Structures -->
-    <script
-      type="text/javascript"
-      src="../assets/data/vanilla-js/wheel-custom.js"
-    ></script>
-    <script
-      type="text/javascript"
-      src="../assets/data/vanilla-js/wheel-taccom.js"
-    ></script>
+
+    {{range $key, $val := .WheelDataFiles}}
+      <script
+        type="text/javascript"
+        src="../assets/data/wheel-types/{{$val}}"
+      ></script>
+    {{end}}    
+
   </head>
 
   <body onresize="UpdatePageAfterResize()">
@@ -196,6 +198,18 @@
           <button type="button" class="btn btn-success" onClick="RestartGame()">
             Restart Game (Resets Wheel + Forms)
           </button>
+
+          <div class="btn-group">
+            <button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Select Wheel Typ
+            </button>
+            <div class="dropdown-menu">
+              {{range $key, $val := .WheelDataFiles}}
+                <a class="dropdown-item" href="#" onClick="AseChangeWheelType({{$key}})">{{$key}}</a>
+              {{end}}
+            </div>
+          </div>        
+
           <button type="button" class="btn btn-danger" onClick="ResetForm()">
             Reset Wheel
           </button>

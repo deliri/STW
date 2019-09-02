@@ -1,6 +1,7 @@
-_rawData["taccom"] = {
+//This is a custome wheel config, you are freee to change as desired
+_rawData["Taccom-003"] = {
     "_meta" : {
-        "wheelId" : "Taccom-001",
+        "wheelId" : "Taccom-003",
         "company" : "Taccom",
         "requireFormToSpin" : true, 
         "maxSpinsPerUser" : 3, 
