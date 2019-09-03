@@ -2,20 +2,22 @@ package models
 
 import (
 	"encoding/json"
-	validation "github.com/go-ozzo/ozzo-validation"
-	"github.com/go-ozzo/ozzo-validation/is"
 	"fmt"
 	"log"
 	"time"
+
+	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/go-ozzo/ozzo-validation/is"
 )
 
 //Winner contains informationabout winners
 type Winner struct {
-	Email     string
-	Name      string
-	Prize     string
-	EmailSent string
-	TimeStamp int64
+	Email       string
+	Name        string
+	PhoneNumber string
+	PrizeWon    string
+	EmailSent   string
+	TimeStamp   int64
 }
 
 //Winners Used to store array of winners
@@ -24,7 +26,6 @@ type Winners []Winner
 var (
 	//winPath of File/Database
 	winPath = "database/winners/allwinners/all_winners.json"
-
 )
 
 //GetHeader returns headeer to be used in CVS data
@@ -33,7 +34,8 @@ func (wn Winners) GetHeader() []string {
 		"S/N",
 		"Name",
 		"Email Address",
-		"Prize",
+		"Phone Number",
+		"Prize Won",
 		"Date",
 		"Notified",
 	}
@@ -50,7 +52,8 @@ func (wn Winners) GetBody() [][]string {
 			fmt.Sprintf("%d", i+1),
 			val.Name,
 			val.Email,
-			val.Prize,
+			val.PhoneNumber,
+			val.PrizeWon,
 			fmt.Sprintf("%v", time.Unix(val.TimeStamp, 0).Format(time.RFC822)),
 			val.EmailSent,
 		}
@@ -61,30 +64,50 @@ func (wn Winners) GetBody() [][]string {
 }
 
 //SaveWinner used to Winner to a file database
-func SaveWinner(winner *Winner) bool {
+func SaveWinners(prizes *Prizes) bool {
+	//Load Winners From Files
 	wn := LoadWinners()
-	//Add Time Stamp
-	winner.TimeStamp = time.Now().Unix()
-	//Append Winer to be stored
-	wn = append(wn, *winner)
+
+	var isMailSent bool //Check If Mail is sent
+
+	for _, val := range *prizes {
+		//Extract Winner
+		if val.PrizeWon != "NO WIN" {
+			w := Winner{
+				Email:       val.Email,
+				PrizeWon:    val.PrizeWon,
+				Name:        val.Name,
+				PhoneNumber: val.PhoneNumber,
+				TimeStamp:   val.TimeStamp,
+			}
+			//Send Mail
+			isMailSent = SendMail("Congratulations", w.Email, w.Name, w.PrizeWon)
+
+			//Update Email Sent Data
+			if isMailSent {
+				w.EmailSent = "YES"
+			} else {
+				w.EmailSent = "NO"
+			}
+
+			//Append To Arrya
+			wn = append(wn, w)
+		}
+	}
+
 	//Convert to Byte
 	data, err := json.Marshal(wn)
 
 	if err != nil {
 		log.Println(err, data)
 	}
-	//Try Sending mail
-	isMailSent := SendMail("Congratulations", winner.Email, winner.Name, winner.Prize)
-	//Update Email Sent Data
-	if isMailSent {
-		winner.EmailSent = "YES"
-	} else {
-		winner.EmailSent = "NO"
-	}
+
 	//Save back to file
 	if saveToFile(winPath, &data) {
 		return true
 	}
+
+	log.Println("Error Saving Winners")
 	return false
 }
 
@@ -108,9 +131,8 @@ func LoadWinners() Winners {
 		}
 	}
 
-	return wn
+	return wn //return winners
 }
-
 
 //Validate Winner
 func (p Winner) Validate() error {
@@ -120,6 +142,6 @@ func (p Winner) Validate() error {
 		//Email field is required and valid
 		validation.Field(&p.Email, validation.Required, is.Email),
 		// Prize cannot be empty, and the length must between 2 and 200
-		validation.Field(&p.Prize, validation.Required, validation.Length(2, 200)),
+		validation.Field(&p.PrizeWon, validation.Required, validation.Length(2, 200)),
 	)
 }

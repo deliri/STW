@@ -1,5 +1,5 @@
 //This is a custome wheel config, you are freee to change as desired
-_rawData["Taccom-002"] = {
+_rawData["taccom-002"] = {
     "_meta" : {
         "wheelId" : "Taccom-002",
         "company" : "Taccom",

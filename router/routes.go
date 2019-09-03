@@ -28,13 +28,13 @@ func RegisterRoutes() *chi.Mux {
 		r.Get("/", h(controllers.Home))
 
 		//Save Prize
-		r.Get("/api/save-prize", h(controllers.SavePrize))
+		r.Post("/api/save-prize-winners", h(controllers.SavePrize))
 		//Save Winner
-		r.Get("/api/save-winner", h(controllers.SaveWinner))
+		// r.Get("/api/save-winner", h(controllers.SaveWinner))
 		//Download Winner As CSV
-		r.Get("/download-winners", h(controllers.DownloadWinners))
+		r.Get("/api/download-winners", h(controllers.DownloadWinners))
 		//Download Prize As CSV
-		r.Get("/download-prizes", h(controllers.DownloadPrizes))
+		r.Get("/api/download-prizes", h(controllers.DownloadPrizes))
 
 		// logout redirects to the home page
 		// ! implement cookie and session clearance

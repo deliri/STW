@@ -978,22 +978,34 @@ function AsePostWheelData()
     // https://api.jquery.com/jQuery.post/
 
     console.log( "Calling :: AsePostWheelData()" );
-    return;
+    // return;
+    let url = "/api/save-prize-winners"
+    console.log(_currentWheel)
 
     $.ajax({
         type: "POST",
-        url: "https://some-url.com/",
-        data: _currentWheel,
+        url: url,
+        data: {
+            winners: JSON.stringify(_currentWheel._meta.arrayOfWinners)
+        },
         success: function( data )
         {
             console.log( data );
             Swal.fire({
                 title: 'You got a response!',
                 type: 'success',
-                html: '<p>' + PrettyPrint( data ) + '</p>', // 'success'
+                html: '<p>' + PrettyPrint( data.responseText ) + '</p>', // 'success'
             });
         },
-        dataType: dataType
+        error: function(data){
+            console.log(data)  
+            Swal.fire({
+                title: 'You got a response!',
+                type: 'error',
+                html: '<p>' + PrettyPrint( data.responseText ) + '</p>', // 'success'
+            });               
+        }
+        // dataType: dataType
     });
 
 }
@@ -1001,45 +1013,49 @@ function AsePostWheelData()
 function AseGetWinners()
 {
     console.log( "Calling :: AseGetWinners()" );
-    return;
+    // return;
 
-    $.ajax({
-        type: "GET",
-        url: "https://some-url.com/download-winners-as-csv",
-        data: _currentWheel,
-        success: function( data )
-        {
-            console.log( data );
-            Swal.fire({
-                title: 'You got a response!',
-                type: 'success',
-                html: '<p>' + PrettyPrint( data ) + '</p>', // 'success'
-            });
-        },
-        dataType: dataType
-    });
+    let url = "/api/download-winners"
+
+    window.open(url, '_blank');
+    // $.ajax({
+    //     type: "GET",
+    //     url: url,
+    //     data: {},
+    //     success: function( data )
+    //     {
+    //         console.log( data );
+    //         Swal.fire({
+    //             title: 'You got a response!',
+    //             type: 'success',
+    //             html: '<p>' + PrettyPrint( data ) + '</p>', // 'success'
+    //         });
+    //     },
+    //     // dataType: dataType
+    // });
 }
 
 function AseGetPrizes()
 {
     console.log( "Calling :: AseGetPrizes()" );
-    return;
+    let url = "/api/download-prizes"
 
-    $.ajax({
-        type: "GET",
-        url: "https://some-url.com/download-prizes-as-csv",
-        data: _currentWheel,
-        success: function( data )
-        {
-            console.log( data );
-            Swal.fire({
-                title: 'You got a response!',
-                type: 'success',
-                html: '<p>' + PrettyPrint( data ) + '</p>', // 'success'
-            });
-        },
-        dataType: dataType
-    });
+    window.open(url, '_blank');
+
+    // $.ajax({
+    //     type: "GET",
+    //     url: url,
+    //     data: {},
+    //     success: function( data )
+    //     {
+    //         console.log( data );
+    //         Swal.fire({
+    //             title: 'You got a response!',
+    //             type: 'success',
+    //             html: '<p>' + PrettyPrint( data ) + '</p>', // 'success'
+    //         });
+    //     },
+    // });
 }
 
 //Change to the selected wheel type
@@ -1052,7 +1068,7 @@ function AseChangeWheelType(wheelType){
 
     // Update the global variable 
     _currentWheelType = wheelType;
-    SetupWheelData(); 
+    
     UpdateWheelFromRawData(); 
     UpdateStatDisplays();
     

@@ -1,67 +1,49 @@
 package controllers
 
 import (
+	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"stw/models"
 )
 
-// SaveWinner Prizes
-func SaveWinner(w http.ResponseWriter, r *http.Request) error {
-	if r.Method == "POST" {
-		wn := &models.Winner{
-			Email: r.PostFormValue("email"),
-			Name:  r.PostFormValue("fullname"),
-			Prize: r.PostFormValue("prize"),
-		}
-		//Validate Data
-		err := wn.Validate()
-		if err != nil { //Check for validation Error
-			w.WriteHeader(http.StatusUnprocessableEntity)
-			fmt.Fprintf(w, "%s", err.Error())
-			return err
-		}
-
-		if models.SaveWinner(wn) { //Check for validation Error
-			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(w, "%s", "Error Saving Winner")
-			return err
-		}
-
-	} else {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "%s", "Invalid Request")
-
-	}
-	return nil
-}
-
 // SavePrize Winners
 func SavePrize(w http.ResponseWriter, r *http.Request) error {
-	if r.Method == "POST" {
-		pr := &models.Prize{
-			Email:       r.PostFormValue("email"),
-			Name:        r.PostFormValue("fullname"),
-			PhoneNumber: r.PostFormValue("phone_number"),
-			Prize:       r.PostFormValue("prize"),
-		}
-		//Validate Data
-		err := pr.Validate()
-		if err != nil { //Check for validation Error
-			w.WriteHeader(http.StatusUnprocessableEntity)
-			fmt.Fprintf(w, "%s", err.Error())
-			return err
+	//Prize Array
+	var prizes models.Prizes
+	//Get Data From Form
+	data := r.PostFormValue("winners")
+
+	if data != "" {
+		err := json.Unmarshal([]byte(data), &prizes)
+		if err != nil {
+			log.Println("Error Getting Prize Data: ", err.Error())
+			fmt.Fprintf(w, "Error Saving Prize")
+			return fmt.Errorf("Error Saving Prize")
 		}
 
-		if !models.SavePrize(pr) { //Check for validation Error
+		//Save Prizes
+		if !models.SavePrizes(&prizes) { //Check for validation Error
 			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(w, "%s", "Error Saving Prize")
-			return err
+			log.Println("Error Saving Prize")
+			fmt.Fprintf(w, "Error Saving Prize")
+			return fmt.Errorf("Error Saving Prize")
 		}
 
-	} else {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "%s", "Invalid Request")
+		//Save Winners
+		if !models.SaveWinners(&prizes) {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Println("Error Saving Winners")
+			fmt.Fprintf(w, "Error Saving Winners")
+			return fmt.Errorf("Error Saving Winners")
+		}
+
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprintf(w, "Data Was Saved Successfully")
+		return nil
 	}
+	w.WriteHeader(http.StatusForbidden)
+	fmt.Fprintf(w, "No Data Was Submitted!")
 	return nil
 }

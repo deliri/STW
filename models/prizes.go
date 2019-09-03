@@ -12,11 +12,13 @@ import (
 
 //Prize is details of the User and Prize
 type Prize struct {
-	Name        string
-	Email       string
-	PhoneNumber string
-	Prize       string
-	TimeStamp   int64
+	Name        string `json:"name"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phone"`
+	WheelID     string `json:"wheelId"`
+	NumberSpins int    `json:"numSpins"`
+	PrizeWon    string `json:"prizeWon"`
+	TimeStamp   int64  `json:"timestamp"`
 }
 
 //Prizes is slices/arrays of Price Struct
@@ -34,7 +36,9 @@ func (p Prizes) GetHeader() []string {
 		"Name",
 		"Email Address",
 		"Phone Number",
-		"Prize",
+		"Prize Won",
+		"Wheel ID",
+		"Number of Spins",
 		"Date",
 	}
 	return s
@@ -51,7 +55,9 @@ func (p Prizes) GetBody() [][]string {
 			val.Name,
 			val.Email,
 			val.PhoneNumber,
-			val.Prize,
+			val.PrizeWon,
+			val.WheelID,
+			fmt.Sprintf("%d", val.NumberSpins),
 			fmt.Sprintf("%v", time.Unix(val.TimeStamp, 0).Format(time.RFC822)),
 		}
 
@@ -61,14 +67,12 @@ func (p Prizes) GetBody() [][]string {
 }
 
 //SavePrize used to Prize to a file database
-func SavePrize(prize *Prize) bool {
+func SavePrizes(prizes *Prizes) bool {
 	//Load Stored Data
 	pr := LoadPrizes()
 
-	//Add Time Stamp
-	prize.TimeStamp = time.Now().Unix()
 	//Append Prize to be stored
-	pr = append(pr, *prize)
+	pr = append(pr, *prizes...)
 	//Convert to Byte
 	data, err := json.Marshal(&pr)
 
@@ -115,6 +119,8 @@ func (p Prize) Validate() error {
 		// Phone Number cannot be empty, and the length must between 2 and 4
 		validation.Field(&p.PhoneNumber, validation.Required, validation.Length(2, 40)),
 		// Phone Number cannot be empty, and the length must between 2 and 200
-		validation.Field(&p.Prize, validation.Length(2, 200)),
+		validation.Field(&p.PrizeWon, validation.Length(2, 200)),
+		// Wheel ID cannot be empty, and the length must between 2 and 200
+		validation.Field(&p.WheelID, validation.Length(2, 200)),
 	)
 }
