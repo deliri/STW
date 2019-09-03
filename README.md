@@ -15,30 +15,9 @@ Updates the
 
 # API :: Backend 
 
-## SavePrize
-To save user/prize data, POST to "api/save-prize" with the folllowing post data:
-```
--email, fullname, phone_number, prize(optional)
-```
 
-Remember to handle frontend errors including validation errors.
-Validation errors will be separated by semi-colon. eg.:
-    ```
-    "email: must be a valid email address; name: cannot be blank"
-    ```
-
-
-## Save Winner
-To save winner's data, POST to "api/save-winner" with the folllowing post data:
-```
--email, fullname, prize
-```
-
-Remember to handle frontend errors including validation errors.
-Validation errors will be separated by semi-colon. eg.:
-    ```
-    "email: must be a valid email address; name: cannot be blank"
-    ```
+## Save Winners and Customer
+To save winner's data, POST to "save-prize-winners" with the folllowing post data:
 
 
 ## Download Winners in CSV Format

@@ -990,19 +990,23 @@ function AsePostWheelData()
         },
         success: function( data )
         {
-            console.log( data );
+            console.log(data);
             Swal.fire({
                 title: 'You got a response!',
                 type: 'success',
-                html: '<p>' + PrettyPrint( data.responseText ) + '</p>', // 'success'
+                html: '<p>' + PrettyPrint( data ) + '</p>', // 'success'
             });
         },
         error: function(data){
             console.log(data)  
+            let msg = "An Error Occured. Please, try again or contact management if it persist."
+            if(data.responseText != undefined){
+                msg = "Error:- " + data.responseText
+            }
             Swal.fire({
                 title: 'You got a response!',
                 type: 'error',
-                html: '<p>' + PrettyPrint( data.responseText ) + '</p>', // 'success'
+                html: '<p>' + PrettyPrint( msg ) + '</p>', // 'success'
             });               
         }
         // dataType: dataType

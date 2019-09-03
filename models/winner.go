@@ -10,25 +10,27 @@ import (
 	"github.com/go-ozzo/ozzo-validation/is"
 )
 
-//Winner contains informationabout winners
+//Winner is details of the User and Prize
 type Winner struct {
-	Email       string
-	Name        string
-	PhoneNumber string
-	PrizeWon    string
+	Name        string `json:"name"`
+	Email       string `json:"email"`
+	PhoneNumber string `json:"phone"`
+	WheelID     string `json:"wheelId"`
+	NumberSpins int    `json:"numSpins"`
+	PrizeWon    string `json:"prizeWon"`
 	EmailSent   string
-	TimeStamp   int64
+	TimeStamp   int64 `json:"timestamp"`
 }
 
-//Winners Used to store array of winners
-type Winners []Winner
+//Winners is map of timestamp and Winner Struct
+type Winners map[int64]Winner
 
 var (
-	//winPath of File/Database
-	winPath = "database/winners/allwinners/all_winners.json"
+	//prizePath of File/Database
+	prizePath = "database/winners/winners.json"
 )
 
-//GetHeader returns headeer to be used in CVS data
+//GetHeader returns header to be used in CVS data
 func (wn Winners) GetHeader() []string {
 	s := []string{
 		"S/N",
@@ -36,88 +38,85 @@ func (wn Winners) GetHeader() []string {
 		"Email Address",
 		"Phone Number",
 		"Prize Won",
+		"Wheel ID",
+		"Number of Spins",
 		"Date",
 		"Notified",
 	}
 	return s
 }
 
-//GetBody returns body  to be used in CVS data
+//GetBody return headeer to be used in CVS data
 func (wn Winners) GetBody() [][]string {
 	var body [][]string
-	winners := LoadWinners()
-
-	for i, val := range winners {
+	Winners := LoadWinners()
+	i := 1
+	for _, val := range Winners {
 		s := []string{
-			fmt.Sprintf("%d", i+1),
+			fmt.Sprintf("%d", i),
 			val.Name,
 			val.Email,
 			val.PhoneNumber,
 			val.PrizeWon,
+			val.WheelID,
+			fmt.Sprintf("%d", val.NumberSpins),
 			fmt.Sprintf("%v", time.Unix(val.TimeStamp, 0).Format(time.RFC822)),
 			val.EmailSent,
 		}
-
+		i++
 		body = append(body, s)
 	}
 	return body
 }
 
-//SaveWinner used to Winner to a file database
-func SaveWinners(prizes *Prizes) bool {
-	//Load Winners From Files
+//SaveWinners used to Prize to a file database
+func SaveWinners(winners *[]Winner) bool {
+	//Load Stored Data
 	wn := LoadWinners()
 
+	//Append Prize to be stored
+	// pr = append(cs, *Winners...)
 	var isMailSent bool //Check If Mail is sent
 
-	for _, val := range *prizes {
-		//Extract Winner
-		if val.PrizeWon != "NO WIN" {
-			w := Winner{
-				Email:       val.Email,
-				PrizeWon:    val.PrizeWon,
-				Name:        val.Name,
-				PhoneNumber: val.PhoneNumber,
-				TimeStamp:   val.TimeStamp,
-			}
-			//Send Mail
-			isMailSent = SendMail("Congratulations", w.Email, w.Name, w.PrizeWon)
-
-			//Update Email Sent Data
-			if isMailSent {
-				w.EmailSent = "YES"
+	for _, val := range *winners {
+		//check if map key exist
+		if _, ok := wn[val.TimeStamp]; !ok {
+			//Send Mail if prize is won
+			if val.PrizeWon != "NO WIN" {
+				isMailSent = SendMail("Congratulations", val.Email, val.Name, val.PrizeWon)
+				//Update Email Sent Data
+				if isMailSent {
+					val.EmailSent = "YES" //Email Sent
+				} else {
+					val.EmailSent = "NO" //Email Failed
+				}
 			} else {
-				w.EmailSent = "NO"
+				val.EmailSent = "NO" //No prize won
 			}
-
-			//Append To Arrya
-			wn = append(wn, w)
+			//Update map
+			wn[val.TimeStamp] = val
 		}
 	}
-
 	//Convert to Byte
-	data, err := json.Marshal(wn)
+	data, err := json.Marshal(&wn)
 
 	if err != nil {
-		log.Println(err, data)
+		log.Println(err)
 	}
-
 	//Save back to file
-	if saveToFile(winPath, &data) {
+	if saveToFile(prizePath, &data) {
 		return true
 	}
-
-	log.Println("Error Saving Winners")
 	return false
 }
 
 //LoadWinners Load winners from file
 func LoadWinners() Winners {
 	//Variable used to Store temporal winner array
-	var wn Winners
+	wn := make(Winners)
 
 	//Load Stored Data from File
-	data, err := loadFileData(winPath)
+	data, err := loadFileData(prizePath)
 
 	if err != nil {
 		log.Println(err)
@@ -131,17 +130,21 @@ func LoadWinners() Winners {
 		}
 	}
 
-	return wn //return winners
+	return wn
 }
 
-//Validate Winner
-func (p Winner) Validate() error {
-	return validation.ValidateStruct(&p,
+//Validate Prize
+func (wn Winner) Validate() error {
+	return validation.ValidateStruct(&wn,
 		// Name cannot be empty, and the length must between 2 and 4
-		validation.Field(&p.Name, validation.Required, validation.Length(2, 60)),
+		validation.Field(&wn.Name, validation.Required, validation.Length(2, 60)),
 		//Email field is required and valid
-		validation.Field(&p.Email, validation.Required, is.Email),
-		// Prize cannot be empty, and the length must between 2 and 200
-		validation.Field(&p.PrizeWon, validation.Required, validation.Length(2, 200)),
+		validation.Field(&wn.Email, validation.Required, is.Email),
+		// Phone Number cannot be empty, and the length must between 2 and 4
+		validation.Field(&wn.PhoneNumber, validation.Required, validation.Length(2, 40)),
+		// Phone Number cannot be empty, and the length must between 2 and 200
+		validation.Field(&wn.PrizeWon, validation.Length(2, 200)),
+		// Wheel ID cannot be empty, and the length must between 2 and 200
+		validation.Field(&wn.WheelID, validation.Length(2, 200)),
 	)
 }
