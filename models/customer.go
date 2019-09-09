@@ -22,8 +22,8 @@ type Customer struct {
 type Customers map[string]Customer
 
 var (
-	//winPath of File/Database
-	winPath = "database/customer/customers.json"
+	//customerPath of File/Database
+	CustomerPath = "database/customer/customers.json"
 )
 
 //GetHeader returns headeer to be used in CVS data
@@ -70,8 +70,6 @@ func SaveCustomers(customers *[]Winner) bool {
 			TimeStamp:   val.TimeStamp,
 		}
 		cs[val.Email] = c
-		//Append To Arrya
-		// wn = append(wn, w)
 	}
 
 	//Convert to Byte
@@ -79,10 +77,11 @@ func SaveCustomers(customers *[]Winner) bool {
 
 	if err != nil {
 		log.Println(err, data)
+		return false
 	}
 
 	//Save back to file
-	if saveToFile(winPath, &data) {
+	if saveToFile(CustomerPath, &data) {
 		return true
 	}
 
@@ -96,7 +95,7 @@ func LoadCustomers() Customers {
 	cs := make(Customers)
 
 	//Load Stored Data from File
-	data, err := loadFileData(winPath)
+	data, err := loadFileData(CustomerPath)
 
 	if err != nil {
 		log.Println(err)

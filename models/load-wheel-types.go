@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	wheelDataPath = "assets/data/wheel-types/"
+	WheelDataPath = "assets/data/wheel-types/"
 )
 
 //LoadWheelTypes loads Wheel JS Data Files to be displayed in front
@@ -16,7 +16,7 @@ func LoadWheelTypes() map[string]string {
 	//wheel data
 	whData := make(map[string]string)
 	//Get Files List from folder
-	files, err := ioutil.ReadDir(wheelDataPath)
+	files, err := ioutil.ReadDir(WheelDataPath)
 	if err != nil {
 		log.Println(err)
 		return whData

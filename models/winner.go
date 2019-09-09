@@ -26,8 +26,8 @@ type Winner struct {
 type Winners map[int64]Winner
 
 var (
-	//prizePath of File/Database
-	prizePath = "database/winners/winners.json"
+	//WinnersPath of File/Database
+	WinnersPath = "database/winners/winners.json"
 )
 
 //GetHeader returns header to be used in CVS data
@@ -104,7 +104,7 @@ func SaveWinners(winners *[]Winner) bool {
 		log.Println(err)
 	}
 	//Save back to file
-	if saveToFile(prizePath, &data) {
+	if saveToFile(WinnersPath, &data) {
 		return true
 	}
 	return false
@@ -116,7 +116,7 @@ func LoadWinners() Winners {
 	wn := make(Winners)
 
 	//Load Stored Data from File
-	data, err := loadFileData(prizePath)
+	data, err := loadFileData(WinnersPath)
 
 	if err != nil {
 		log.Println(err)
